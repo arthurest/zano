@@ -124,10 +124,6 @@ export class SendComponent implements OnInit, OnDestroy {
         this.mixin = 0;
         this.sendForm.controls['mixin'].disable();
       }
-      this.hideWalletAddress = this.variablesService.currentWallet.is_auditable && !this.variablesService.currentWallet.is_watch_only;
-      if (this.hideWalletAddress) {
-        this.sendForm.controls['hide'].disable();
-      }
       this.sendForm.reset({
         address: this.variablesService.currentWallet.send_data['address'],
         amount: this.variablesService.currentWallet.send_data['amount'],
@@ -136,6 +132,11 @@ export class SendComponent implements OnInit, OnDestroy {
         fee: this.variablesService.currentWallet.send_data['fee'] || this.variablesService.default_fee,
         hide: this.variablesService.currentWallet.send_data['hide'] || false
       });
+      this.hideWalletAddress = this.variablesService.currentWallet.is_auditable && !this.variablesService.currentWallet.is_watch_only;
+      if (this.hideWalletAddress) {
+        this.sendForm.controls['hide'].setValue(true);
+        this.sendForm.controls['hide'].disable();
+      }
     });
   }
 
@@ -171,7 +172,7 @@ export class SendComponent implements OnInit, OnDestroy {
                 if (send_status) {
                   this.modalService.prepareModal('success', 'SEND.SUCCESS_SENT');
                   this.variablesService.currentWallet.send_data = {address: null, amount: null, comment: null, mixin: null, fee: null, hide: null};
-                  this.sendForm.reset({address: null, amount: null, comment: null, mixin: this.mixin, fee: this.variablesService.default_fee, hide: false});
+                  this.sendForm.reset({address: null, amount: null, comment: null, mixin: this.mixin, fee: this.variablesService.default_fee, hide: this.hideWalletAddress});
                 }
               });
           }
@@ -196,7 +197,7 @@ export class SendComponent implements OnInit, OnDestroy {
                   if (send_status) {
                     this.modalService.prepareModal('success', 'SEND.SUCCESS_SENT');
                     this.variablesService.currentWallet.send_data = {address: null, amount: null, comment: null, mixin: null, fee: null, hide: null};
-                    this.sendForm.reset({address: null, amount: null, comment: null, mixin: this.mixin, fee: this.variablesService.default_fee, hide: false});
+                    this.sendForm.reset({address: null, amount: null, comment: null, mixin: this.mixin, fee: this.variablesService.default_fee, hide: this.hideWalletAddress});
                   }
                 });
             }
